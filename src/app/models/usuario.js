@@ -17,7 +17,7 @@ const UsuarioSchema = new mongoose.Schema({
     required: true,
     select: false,
   },
-  nivel: {
+  tipo: {
     type: String,
     required: false,
   },
