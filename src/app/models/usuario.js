@@ -1,94 +1,97 @@
-import mongoose from '../../database';
-import bcrypt from 'bcryptjs';
+import mongoose from "../../database";
+import bcrypt from "bcryptjs";
 
-const UsuarioSchema = new mongoose.Schema({
-  nome: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-  },
-  senha: {
-    type: String,
-    required: true,
-    select: false,
-  },
-  tipo: {
-    type: String,
-    required: false,
-  },
-  genero: {
-    type: String,
-    required: false
-  },
-  celular: {
-    type: String,
-    required: false
-  },
-  dataNascimento: {
-    type: String,
-    required: false
-  },
-  ativo: {
-    type: Boolean,
-    default: false
-  },
-  fotoPerfil: {
-    type: String,
-    required: false
-  },
-  recuperacaoSenha: {
-    token: {
+const UsuarioSchema = new mongoose.Schema(
+  {
+    nome: {
       type: String,
-      required: false
+      required: true
     },
-    dataExpiracao: {
-      type: Date,
-      required: false
-    }
-  },
-  confirmacaoCadastro: {
-    token: {
-      type: String,
-      required: false
-    },
-    dataExpiracao: {
-      type: Date,
-      required: false
-    }
-  },
-  trocaEmail: {
     email: {
       type: String,
-      required: false,
+      required: true,
       unique: true,
-      lowercase: true,
+      lowercase: true
     },
-    tokenConfirmacao: {
+    senha: {
+      type: String,
+      required: true,
+      select: false
+    },
+    tipo: {
       type: String,
       required: false
     },
-    tokenRecuperacao: {
+    genero: {
       type: String,
       required: false
     },
-    dataExpiracao: {
-      type: Date,
+    celular: {
+      type: String,
       required: false
+    },
+    dataNascimento: {
+      type: String,
+      required: false
+    },
+    ativo: {
+      type: Boolean,
+      default: false
+    },
+    fotoPerfil: {
+      type: String,
+      required: false
+    },
+    recuperacaoSenha: {
+      token: {
+        type: String,
+        required: false
+      },
+      dataExpiracao: {
+        type: Date,
+        required: false
+      }
+    },
+    confirmacaoCadastro: {
+      token: {
+        type: String,
+        required: false
+      },
+      dataExpiracao: {
+        type: Date,
+        required: false
+      }
+    },
+    trocaEmail: {
+      emailTrocado: {
+        type: String,
+        required: false,
+        unique: true,
+        lowercase: true
+      },
+      tokenConfirmacao: {
+        type: String,
+        required: false
+      },
+      tokenRecuperacao: {
+        type: String,
+        required: false
+      },
+      dataExpiracao: {
+        type: Date,
+        required: false
+      }
     }
   },
-}, { timestamps: true });
+  { timestamps: true }
+);
 
-UsuarioSchema.pre('save', async function (next) {
+UsuarioSchema.pre("save", async function(next) {
   const hash = await bcrypt.hash(this.senha, 10);
   this.senha = hash;
   next();
 });
 
-const Usuario = mongoose.model('Usuario', UsuarioSchema, 'usuarios');
+const Usuario = mongoose.model("Usuario", UsuarioSchema, "usuarios");
 
 module.exports = Usuario;
