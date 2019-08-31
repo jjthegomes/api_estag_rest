@@ -1,11 +1,11 @@
 import express from "express";
 import authMiddleware from "../middlewares/auth";
-import Empresa from "../models/Empresa";
-import Vaga from "../models/Vaga";
+import Empresa from "../models/empresa";
+import Vaga from "../models/vaga";
 
 const router = express.Router();
 
-// router.use(authMiddleware);
+router.use(authMiddleware);
 
 router.post("/", async (req, res) => {
   try {
@@ -26,10 +26,23 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const empresa = await Empresa.find();
-    return res.send({ empresa });
+    const empresas = await Empresa.find();
+    console.log(empresas)
+    return res.send({ empresas });
   } catch (err) {
     return res.status(400).send({ error: "Empresas não encontrada" });
+  }
+});
+
+router.get("/usuario", async (req, res) => {
+  try {
+    const empresa = await Empresa.findOne({ usuario: req.usuarioId });
+    if (!empresa)
+      return res.status(401).send({ error: 'Nenhuma empresa encontrada' })
+
+    return res.send(empresa);
+  } catch (err) {
+    return res.status(406).send({ error: "Empresa não encontrada" });
   }
 });
 

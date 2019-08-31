@@ -1,7 +1,7 @@
 import express from "express";
 import authMiddleware from "../middlewares/auth";
-import Vaga from "../models/Vaga";
-import Empresa from "../models/Empresa";
+import Vaga from "../models/vaga";
+import Empresa from "../models/empresa";
 import Candidatura from "../models/candidatura";
 const router = express.Router();
 

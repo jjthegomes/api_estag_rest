@@ -1,22 +1,26 @@
 import express from "express";
 import authMiddleware from "../middlewares/auth";
-import Vaga from "../models/Vaga";
-import Empresa from "../models/Empresa";
+import Vaga from "../models/vaga";
+import Empresa from "../models/empresa";
 
 const router = express.Router();
 
-// router.use(authMiddleware);
+router.use(authMiddleware);
 
 router.post("/", async (req, res) => {
   try {
-    const empresa = await Empresa.findById(req.body.empresa);
-    if (!empresa) res.status(400).send({ error: "Empresa não existe." });
+    const empresa = await Empresa.findOne({ usuario: req.usuarioId });
+    if (!empresa)
+      return res.status(401).send({ error: 'Nenhuma empresa encontrada' })
 
-    const vaga = await Vaga.create(req.body);
+    const vaga = await Vaga.create({ ...req.body, empresa });
     await vaga.save();
-    empresa.vagas.push(vaga);
-    await empresa.save();
-    return res.send({ vaga });
+
+    await Empresa.findByIdAndUpdate(empresa._id, {
+      vagas: [...empresa.vagas, vaga]
+    }, { new: true });
+
+    return res.send(vaga);
   } catch (err) {
     return res.status(400).send({ error: "Erro ao salvar vaga" });
   }
@@ -24,8 +28,8 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const vaga = await Vaga.find();
-    return res.send({ vaga });
+    const vagas = await Vaga.find();
+    return res.send({ vagas });
   } catch (err) {
     return res.status(400).send({ error: "Vagas não encontrada" });
   }
@@ -34,7 +38,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const vaga = await Vaga.findOne({ _id: req.params.id });
-    return res.send({ vaga });
+    return res.send(vaga);
   } catch (err) {
     return res.status(400).send({ error: "Vaga não encontrada" });
   }
@@ -42,6 +46,12 @@ router.get("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
+    const empresa = await Empresa.findOne({ usuario: req.usuarioId });
+    if (!empresa)
+      return res.status(401).send({ error: 'Nenhuma empresa encontrada' })
+
+    console.log(req.params)
+
     const vaga = await Vaga.findOneAndUpdate(
       { _id: req.params.id },
       {
@@ -53,6 +63,7 @@ router.put("/:id", async (req, res) => {
     );
     return res.send({ vaga });
   } catch (err) {
+    console.log(err)
     return res.status(400).send({ error: "Vaga não encontrada" });
   }
 });

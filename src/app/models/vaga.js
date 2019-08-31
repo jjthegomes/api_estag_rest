@@ -40,8 +40,8 @@ const VagaSchema = new mongoose.Schema({
     type: Boolean,
     required: false,
     default: true,
-  }, //boolean
-  idEmpresa: {
+  },
+  empresa: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'empresa'
   },
@@ -61,7 +61,7 @@ const VagaSchema = new mongoose.Schema({
   categoria: {
     type: String,
     required: false,
-  },// ou area,
+  },
   cidade: {
     type: String,
     required: false,

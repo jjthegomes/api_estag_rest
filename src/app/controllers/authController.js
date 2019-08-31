@@ -3,8 +3,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import mailer from '../../modules/mailer';
-import authconfig from '../../config/auth.json';
 import User from '../models/usuario';
+const authconfig = { secret: process.env.AUTH_SECRET };
 
 const router = express.Router();
 
@@ -16,7 +16,7 @@ function generateToken(params = {}) {
 
 function generateTokenWeb(params = {}) {
   return jwt.sign(params, authconfig.secret, {
-    expiresIn: 1800
+    expiresIn: 3600
   });
 }
 
