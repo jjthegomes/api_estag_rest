@@ -11,14 +11,16 @@ router.post("/", async (req, res) => {
   try {
     const empresa = await Empresa.findOne({ usuario: req.usuarioId });
     if (!empresa)
-      return res.status(401).send({ error: 'Nenhuma empresa encontrada' })
+      return res.status(401).send({ error: "Nenhuma empresa encontrada" });
 
     const vaga = await Vaga.create({ ...req.body, empresa });
     await vaga.save();
 
-    await Empresa.findByIdAndUpdate(empresa._id, {
-      vagas: [...empresa.vagas, vaga]
-    }, { new: true });
+    await Empresa.findOneAndUpdate(
+      { _id: empresa._id },
+      { $push: { vagas: vaga._id } },
+      { new: true }
+    );
 
     return res.send(vaga);
   } catch (err) {
@@ -28,7 +30,7 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const vagas = await Vaga.find();
+    const vagas = await Vaga.find().populate("empresa");
     return res.send({ vagas });
   } catch (err) {
     return res.status(400).send({ error: "Vagas não encontrada" });
@@ -37,7 +39,10 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const vaga = await Vaga.findOne({ _id: req.params.id });
+    const vaga = await Vaga.findOne({ _id: req.params.id }).populate("empresa");
+    if (!vaga)
+      return res.status(401).send({ error: "Nenhuma vaga encontrada" });
+
     return res.send(vaga);
   } catch (err) {
     return res.status(400).send({ error: "Vaga não encontrada" });
@@ -48,22 +53,16 @@ router.put("/:id", async (req, res) => {
   try {
     const empresa = await Empresa.findOne({ usuario: req.usuarioId });
     if (!empresa)
-      return res.status(401).send({ error: 'Nenhuma empresa encontrada' })
-
-    console.log(req.params)
+      return res.status(401).send({ error: "Nenhuma empresa encontrada" });
 
     const vaga = await Vaga.findOneAndUpdate(
       { _id: req.params.id },
-      {
-        $set: {
-          ...req.body
-        }
-      },
+      { $set: { ...req.body } },
       { new: true }
-    );
+    ).populate("empresa");
     return res.send({ vaga });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return res.status(400).send({ error: "Vaga não encontrada" });
   }
 });

@@ -6,16 +6,16 @@ const candidaturaSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Vaga"
     },
-    usuario: {
+    cliente: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Usuario"
+      ref: "Cliente"
     }
   },
   { timestamps: true }
 );
 
 module.exports = mongoose.model(
-  "Candidatura",
+  "candidatura",
   candidaturaSchema,
   "candidaturas"
 );
