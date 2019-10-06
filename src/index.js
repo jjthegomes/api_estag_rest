@@ -1,9 +1,9 @@
-import express from 'express';
+import express from "express";
 import path from "path";
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import fs from 'fs';
-import dotenv from 'dotenv';
+import bodyParser from "body-parser";
+import cors from "cors";
+import fs from "fs";
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -12,20 +12,25 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use(cors({
-  origin: '*',
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: "*",
+    credentials: true
+  })
+);
 
-require('./app/controllers/index')(app);
+require("./app/controllers/index")(app);
 
-fs.stat(path.join(__dirname, '../web_estag/build/index.html'), function (err, stat) {
+fs.stat(path.join(__dirname, "../web_estag/build/index.html"), function(
+  err,
+  stat
+) {
   if (err == null) {
-    app.use(express.static(path.join(__dirname, '../web_estag/build')));
-    app.get('/*', function (req, res) {
-      res.sendFile(path.join(__dirname, '../web_estag/build', 'index.html'));
+    app.use(express.static(path.join(__dirname, "../web_estag/build")));
+    app.get("/*", function(req, res) {
+      res.sendFile(path.join(__dirname, "../web_estag/build", "index.html"));
     });
-  } else if (err.code == 'ENOENT') {
+  } else if (err.code == "ENOENT") {
     app.get("/*", (req, res) => {
       res.sendFile(path.join(__dirname, "index.html"));
     });
@@ -37,6 +42,6 @@ fs.stat(path.join(__dirname, '../web_estag/build/index.html'), function (err, st
   }
 });
 
-app.listen(3000, function () {
-  console.log('API listening on port 3000');
+app.listen(3001, function() {
+  console.log("API listening on port 3001");
 });
