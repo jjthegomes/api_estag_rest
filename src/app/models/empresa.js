@@ -32,16 +32,14 @@ const EmpresaSchema = new mongoose.Schema(
       type: String,
       required: false
     },
-    porte: {
-      type: String,
-      enum: ["micro", "pequena", "media", "grande"],
-      required: false
-    },
-    usuario: { type: mongoose.Schema.Types.ObjectId, ref: 'usuario' }
+    usuario: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "usuario"
+    }
   },
   { timestamps: true }
 );
 
-const Empresa = mongoose.model("Empresa", EmpresaSchema, "empresas");
+const Empresa = mongoose.model("empresa", EmpresaSchema, "empresas");
 
 module.exports = Empresa;

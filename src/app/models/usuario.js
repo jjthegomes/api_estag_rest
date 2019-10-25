@@ -24,7 +24,9 @@ const UsuarioSchema = new mongoose.Schema(
     },
     genero: {
       type: String,
-      required: false
+      enum: ["Masculino", "Feminino", "Outro"],
+      default: "Outro",
+      required: true
     },
     celular: {
       type: String,
@@ -66,7 +68,6 @@ const UsuarioSchema = new mongoose.Schema(
       emailTrocado: {
         type: String,
         required: false,
-        unique: true,
         lowercase: true
       },
       tokenConfirmacao: {
@@ -92,6 +93,6 @@ UsuarioSchema.pre("save", async function(next) {
   next();
 });
 
-const Usuario = mongoose.model("Usuario", UsuarioSchema, "usuarios");
+const Usuario = mongoose.model("usuario", UsuarioSchema, "usuarios");
 
 module.exports = Usuario;
