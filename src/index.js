@@ -19,6 +19,8 @@ app.use(cors({
 
 require('./app/controllers/index')(app);
 
+const BUILD_PATH = process.env.BUILD_PATH || '../build'
+
 fs.stat(path.join(__dirname, `${BUILD_PATH}/index.html`), function (err, stat) {
   if (err == null) {
     app.use(express.static(path.join(__dirname, BUILD_PATH)));
