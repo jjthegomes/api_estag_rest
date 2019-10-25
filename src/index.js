@@ -19,21 +19,16 @@ app.use(cors({
 
 require('./app/controllers/index')(app);
 
-fs.stat(path.join(__dirname, '../web_estag/build/index.html'), function (err, stat) {
+fs.stat(path.join(__dirname, `${BUILD_PATH}/index.html`), function (err, stat) {
   if (err == null) {
-    app.use(express.static(path.join(__dirname, '../web_estag/build')));
+    app.use(express.static(path.join(__dirname, BUILD_PATH)));
     app.get('/*', function (req, res) {
-      res.sendFile(path.join(__dirname, '../web_estag/build', 'index.html'));
-    });
-  } else if (err.code == 'ENOENT') {
-    app.get("/*", (req, res) => {
-      res.sendFile(path.join(__dirname, "index.html"));
+      res.sendFile(path.join(__dirname, BUILD_PATH, 'index.html'));
     });
   } else {
     app.get("/*", (req, res) => {
       res.sendFile(path.join(__dirname, "index.html"));
     });
-    console.log(err.code);
   }
 });
 
