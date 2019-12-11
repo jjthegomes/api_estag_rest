@@ -49,6 +49,20 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.get("/empresa/:id", async (req, res) => {
+  try {
+    const vaga = await Vaga.find({ empresa: req.params.id }).populate(
+      "empresa"
+    );
+    if (!vaga)
+      return res.status(401).send({ error: "Nenhuma vaga encontrada" });
+
+    return res.send(vaga);
+  } catch (err) {
+    return res.status(400).send({ error: "Vaga não encontrada" });
+  }
+});
+
 router.put("/:id", async (req, res) => {
   try {
     const empresa = await Empresa.findOne({ usuario: req.usuarioId });
